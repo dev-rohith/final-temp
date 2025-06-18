@@ -4,6 +4,7 @@ set -e
 # Extract assessment name
 IFS='_' read -ra parts <<< "$REPO_NAME"
 export ASSESSMENT_NAME="${parts[0]}"
+# const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 # Run Node.js script to download the test case using bucket name and file path
 node <<'EOF'
 const { createClient } = require('@supabase/supabase-js');
