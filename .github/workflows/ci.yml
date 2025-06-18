@@ -1,0 +1,61 @@
+name: ci.yml
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+
+      - name: Install dependencies
+        run: npm i
+
+      - name: Check for changes in github/ or scripts/ from first main commit
+        id: check
+        run: |
+          # Always fetch main to be sure
+          git fetch origin main
+      
+          # Get first commit hash in main
+          FIRST_COMMIT=$(git rev-list --max-parents=0 origin/main)
+          echo "First commit on main: $FIRST_COMMIT"
+      
+          # Diff from first commit to current HEAD
+          CHANGED=$(git diff --name-only $FIRST_COMMIT HEAD | grep -E '^github/|^scripts/' || true)
+          echo "Changed files: $CHANGED"
+      
+          if [ -z "$CHANGED" ]; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Run script if changes detected
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          echo "Detected relevant changes — running script..."
+          node scripts/someFile.js  # replace with your actual script
+      
+            - name: Run script if changes detected
+              if: steps.check.outputs.changed == 'true'
+              run: |
+                echo "Relevant changes found — running script..."
+                node myscript.js
+      
+            - name: Skip if no changes
+              if: steps.check.outputs.changed != 'true'
+              run: echo "No changes in github/ or scripts/ — nothing to do."
