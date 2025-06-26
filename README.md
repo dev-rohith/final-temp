@@ -6,6 +6,7 @@
 - Install dependencies
   ```
   yarn
+  kjhvjh
   ```
 - Seed database
   ```
