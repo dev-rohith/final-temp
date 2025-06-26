@@ -11,7 +11,7 @@
 - Seed database
   ```
   yarn seed
-  ```
+  ```sdjkfgjsdb,sdnfjs 
 - Start the dev server
   ```
   yarn dev
